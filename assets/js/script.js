@@ -1,7 +1,25 @@
 // Retrieve tasks and nextId from localStorage
-let taskList = JSON.parse(localStorage.getItem("tasks"));
+// let taskList = JSON.parse(localStorage.getItem("tasks"));
 let nextId = JSON.parse(localStorage.getItem("nextId"));
 const closeBtnEl = $('#close-btn');
+const taskFormEl = $('#task-form');
+const taskNameInputEl = $('#task-name-input');
+const taskDescrptionInputEl = $('#task-description-input');
+const taskDateInputEl = $('#taskDueDate');
+
+function readTasksFromStorage() {
+    // ? Retrieve tasks from localStorage and parse the JSON to an array.
+    // ? We use `let` here because there is a chance that there are no taks in localStorage (which means the taskList variable will be equal to `null`) and we will need it to be initialized to an empty array.
+    let taskList = JSON.parse(localStorage.getItem("tasks"));
+
+    // ? If no taks were retrieved from localStorage, assign taskLikst to a new empty array to push to later.
+    if (!taskList) {
+        taskList = [];
+    }
+    // ? Return the taskList array either empty or with data in it whichever it was determined to be by the logic right above.
+    return taskList;
+}
+
 
 // Todo: create a function to generate a unique task id
 function generateTaskId() {
@@ -22,11 +40,32 @@ function createTaskCard(task) {
         .text('Delete')
         .attr('data-project-id', task.id);
     cardDeleteBtn.on('click', handleDeleteTask);
+
+    if (task.dueDate && task.status !== 'done') {
+        const now = dayjs();
+        const taskDueDate = dayjs(task.dueDate, 'DD/MM/YYYY');
+
+        // ? If the task is due today, make the card yellow. If it is overdue, make it red.
+        if (now.isSame(taskDueDate, 'day')) {
+            taskCard.addClass('bg-warning text-white');
+        } else if (now.isAfter(taskDueDate)) {
+            taskCard.addClass('bg-danger text-white');
+            cardDeleteBtn.addClass('border-light');
+        }
+    }
+    // ? Gather all the elements created above and append them to the correct elements.
+    cardBody.append(cardDescription, cardDueDate, cardDeleteBtn);
+    taskCard.append(cardHeader, cardBody);
+
+    // ? Return the card so it can be appended to the correct lane.
+    return taskCard;
+
 }
 
 // Todo: create a function to render the task list and make cards draggable
 function renderTaskList() {
     console.log('renderTaskList');
+    const taskList = readTasksFromStorage();
 
     // ? Empty existing project cards out of the lanes
     const todoList = $('#todo-cards');
@@ -85,12 +124,26 @@ function handleAddTask(event) {
         status: 'to-do',
     };
 
+    // ? Pull the projects from localStorage and push the new project to the array
+    const taskList = readTasksFromStorage();
+    taskList.push(newTask);
+
+    // ? Save the updated projects array to localStorage
+    localStorage.setItem('tasks', JSON.stringify(taskList));
+
+    // ? Print project data back to the screen
+    renderTaskList();
+
+    // ? Clear the form inputs
+    taskNameInputEl.val('');
+    taskDescriptionInputEl.val('');
+    taskDateInputEl.val('');
 }
 
 // Todo: create a function to handle deleting a task
 function handleDeleteTask(event) {
     const taskId = $(this).attr('data-task-id');
-    const projects = readProjectsFromStorage();
+    const taskList = readTasksFromStorage();
 
     // ? Remove project from the array. There is a method called `filter()` for this that is better suited which we will go over in a later activity. For now, we will use a `forEach()` loop to remove the project.
     taskList = taskList.filter((task) => task.id != taskId)
@@ -99,7 +152,11 @@ function handleDeleteTask(event) {
     //     if (task.id === taskId) {
     //         taskList.splice(taskList.indexOf(task), 1);
     //     }
+
+    // ? We will use our helper function to save the projects to localStorage
     localStorage.setItem('tasks', JSON.stringify(taskList));
+
+    // ? Here we use our other function to render tasks back to the screen
     renderTaskList();
 
 }
