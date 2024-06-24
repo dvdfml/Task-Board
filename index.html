@@ -25,6 +25,42 @@
       <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#formModal">Add Task</button>
     </div>
     <!-- Todo: Create a modal with a form to add tasks -->
+    <div class="modal fade" id="formModal" tabindex="-1" role="dialog" aria-labelledby="formModal" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Add Task</h5>
+            <button type="button" id="close-btn" class="close" data-dismiss="modal" data-bs-target="#formModal"
+              aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form class="container-fluid">
+              <div class="row mb-3">
+                <div class="col form-group">
+                  <label for="task-name-input">Task Title</label>
+                  <input type="text" class="mt-1 form-control" id="task-name-input">
+                </div>
+                <div class="col form-group">
+                  <label for="taskDueDate">Task Due Date</label>
+                  <input type="text" class="mt-1 form-control" id="taskDueDate">
+                </div>
+              </div>
+              <div class="row">
+                <div class="col form-group">
+                  <label for="task-description-input">Task Description</label>
+                  <textarea class="form-control mt-1" id="task-description-input" rows="3"></textarea>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-success">Add Task</button>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="row swim-lanes text-center justify-content-between">
       <div class="col-12 col-lg-4 d-flex">
         <div id="to-do" class="card border-light mb-3 lane flex-grow-1">
