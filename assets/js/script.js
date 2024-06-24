@@ -68,6 +68,21 @@ function renderTaskList() {
 
 // Todo: create a function to handle adding a new task
 function handleAddTask(event) {
+    event.preventDefault();
+
+    // ? Read user input from the form
+    const taskName = taskNameInputEl.val().trim();
+    const taskDescription = taskDescrptionInputEl.val().trim();
+    const taskDate = taskDateInputEl.val(); // yyyy-mm-dd format
+
+    const newTask = {
+        // ? Here we use a Web API called `crypto` to generate a random id for our project. This is a unique identifier that we can use to find the project in the array. `crypto` is a built-in module that we can use in the browser and Nodejs.
+        id: generateTaskId(),
+        name: taskName,
+        description: taskDescription,
+        dueDate: taskDate,
+        status: 'to-do',
+    };
 
 }
 
